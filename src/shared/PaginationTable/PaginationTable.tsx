@@ -50,11 +50,14 @@ export const PaginationTable = ({ columns, rows }: PaginationTableProps) => {
           <TableBody>
             {tableRows.map((row: Data) => (
               <TableRow key={row.id} hover>
-                {columns.map((column: Column) => (
-                  <TableCell key={column.id} align={column.align} classes={{ root: classes.tableBodyCell }}>
-                    {row[column.id]}
-                  </TableCell>
-                ))}
+                {columns.map((column: Column) => {
+                  const value = row[column.id];
+                  return (
+                    <TableCell key={column.id} align={column.align} classes={{ root: classes.tableBodyCell }}>
+                      {column.format && typeof value !== 'object' ? column.format(value, row) : value}
+                    </TableCell>
+                  );
+                })}
               </TableRow>
             ))}
             {!tableRows.length && (
