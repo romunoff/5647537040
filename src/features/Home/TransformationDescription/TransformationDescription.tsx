@@ -30,6 +30,7 @@ export const TransformationDescription = () => {
     Papa.parse(event.target.files[0], {
       header: true,
       skipEmptyLines: true,
+      transformHeader: (header: string) => header.trim().toLowerCase(),
       complete: (results) => {
         dispatch(loadTransformationDescription({ data: results.data }));
       },
