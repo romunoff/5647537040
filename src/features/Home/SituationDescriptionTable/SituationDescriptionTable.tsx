@@ -46,7 +46,7 @@ export const SituationDescriptionTable = () => {
         item.description.toLowerCase().includes(search.toLowerCase()),
       ),
     );
-  }, [search]);
+  }, [search, situationDescriptionState.list]);
 
   useEffect(() => {
     return () => {
