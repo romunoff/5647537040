@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { ListState } from '../../../utils/reducer-helper';
 
 export interface SituationDescription {
-  id: string;
+  id: string | number;
   description: string;
 }
 
@@ -26,6 +26,16 @@ const situationDescriptionSlice = createSlice({
         item.id === action.payload.data.id ? { ...item, description: action.payload.data.description } : item,
       );
     },
+    addSituationDescription: (state, action) => {
+      const list = state.situationDescriptionState.list;
+      state.situationDescriptionState.list = [
+        ...list,
+        {
+          id: (+list[list.length - 1]?.id || 0) + 1,
+          description: action.payload,
+        },
+      ];
+    },
     removeSituationDescription: (state, action) => {
       state.situationDescriptionState.list = state.situationDescriptionState.list.filter(
         (item) => item.id !== action.payload,
@@ -40,6 +50,7 @@ const situationDescriptionSlice = createSlice({
 export const {
   loadSituationDescription,
   changeSituationDescription,
+  addSituationDescription,
   removeSituationDescription,
   clearSituationDescription,
 } = situationDescriptionSlice.actions;
