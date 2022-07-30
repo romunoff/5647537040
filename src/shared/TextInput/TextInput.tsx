@@ -9,9 +9,10 @@ interface TextInputProps {
   placeholder?: string;
   value?: string;
   onChange?: Function;
+  onBlur?: Function;
 }
 
-export const TextInput = ({ name, defaultValue, placeholder, value, onChange }: TextInputProps) => {
+export const TextInput = ({ name, defaultValue, placeholder, value, onChange, onBlur }: TextInputProps) => {
   const classes = useStyles();
 
   const handleChangeValue = (event: ChangeEvent<HTMLInputElement>) => {
@@ -26,6 +27,12 @@ export const TextInput = ({ name, defaultValue, placeholder, value, onChange }: 
     }
   };
 
+  const handleOnBlur = (event: any) => {
+    if (onBlur) {
+      onBlur(event);
+    }
+  };
+
   return (
     <TextField
       classes={{ root: classes.root }}
@@ -34,6 +41,7 @@ export const TextInput = ({ name, defaultValue, placeholder, value, onChange }: 
       placeholder={placeholder}
       value={value}
       onChange={handleChangeValue}
+      onBlur={handleOnBlur}
       InputProps={{
         className: classes.input,
         endAdornment: (

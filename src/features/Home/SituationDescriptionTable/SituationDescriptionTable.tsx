@@ -31,7 +31,7 @@ export const SituationDescriptionTable = () => {
   const situationDescriptionState = useSelector(selectSituationDescriptionState);
 
   const [tableData, setTableData] = useState<SituationDescription[]>([]);
-  const [editRowIds, setEditRowIds] = useState<(string | number)[]>([]);
+  const [editRowData, setEditRowData] = useState<SituationDescription[]>([]);
   const [search, setSearch] = useState<string>('');
   const [descriptionValue, setDescriptionValue] = useState<string>('');
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -78,33 +78,52 @@ export const SituationDescriptionTable = () => {
     downloadCsvFile(Papa.unparse(situationDescriptionState.list), 'situationDescription.csv');
   };
 
+  const handleEditButton = (id: string | number) => {
+    const findItem = situationDescriptionState.list.find((item: SituationDescription) => item.id === id);
+    findItem && setEditRowData([...editRowData, findItem]);
+  };
+
+  const handleCancelButton = (id: string | number) => {
+    setEditRowData(editRowData.filter((item: SituationDescription) => item.id !== id));
+  };
+
+  const handleSaveButton = (id: string | number) => {
+    const findItem = editRowData.find((item: SituationDescription) => item.id === id);
+    findItem && setTableData(tableData.map((item: SituationDescription) => (item.id === id ? findItem : item)));
+    dispatch(changeSituationDescription(findItem));
+    handleCancelButton(id);
+  };
+
   const formatDescriptionColumn = (value: DataValueTypes, row: Data) =>
-    editRowIds.includes(row.id) ? <TextInput name={row.id.toString()} defaultValue={value} /> : value;
+    editRowData.some((item: SituationDescription) => item.id === row.id) ? (
+      <TextInput
+        name={row.id.toString()}
+        defaultValue={value}
+        onBlur={(event: any) =>
+          setEditRowData(
+            editRowData.map((item: SituationDescription) =>
+              item.id === row.id ? { ...item, description: event.target.value } : item,
+            ),
+          )
+        }
+      />
+    ) : (
+      value
+    );
 
   const createActions = (value: DataValueTypes, row: Data) =>
-    editRowIds.includes(row.id) ? (
+    editRowData.some((item: SituationDescription) => item.id === row.id) ? (
       <>
-        <IconButton
-          color='primary'
-          size='small'
-          onClick={() => {
-            dispatch(changeSituationDescription({ id: row.id, description: value }));
-            setEditRowIds(editRowIds.filter((item: string | number) => item !== row.id));
-          }}
-        >
+        <IconButton color='primary' size='small' onClick={() => handleSaveButton(row.id)}>
           <DoneIcon />
         </IconButton>
-        <IconButton
-          color='primary'
-          size='small'
-          onClick={() => setEditRowIds(editRowIds.filter((item: string | number) => item !== row.id))}
-        >
+        <IconButton color='primary' size='small' onClick={() => handleCancelButton(row.id)}>
           <CloseIcon />
         </IconButton>
       </>
     ) : (
       <>
-        <IconButton color='primary' size='small' onClick={() => setEditRowIds([...editRowIds, row.id])}>
+        <IconButton color='primary' size='small' onClick={() => handleEditButton(row.id)}>
           <EditIcon />
         </IconButton>
         <IconButton color='primary' size='small' onClick={() => dispatch(removeSituationDescription(row.id))}>
