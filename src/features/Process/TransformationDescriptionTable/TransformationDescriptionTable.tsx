@@ -3,10 +3,10 @@ import { PaginationTable } from '../../../shared/PaginationTable/PaginationTable
 import { Column, Data } from '../../../shared/PaginationTable/paginationTableUtils';
 import { useSelector } from 'react-redux';
 import { selectTransformationDescriptionState } from '../../../utils/selectors/transformationDescription-selectors';
-import { getColumns, getRows } from './transformationDescriptionUtils';
+import { getColumns, getRows } from './transformationDescriptionTableUtils';
 import AddCircleOutlineRoundedIcon from '@material-ui/icons/AddCircleOutlineRounded';
 
-export const TransformationDescription = () => {
+export const TransformationDescriptionTable = () => {
   const classes = useStyles();
 
   const transformationDescriptionState = useSelector(selectTransformationDescriptionState);

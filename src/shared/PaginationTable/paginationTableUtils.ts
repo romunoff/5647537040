@@ -6,6 +6,7 @@ type ColumnFormat<T> = (value: DataValueTypes, row: T) => string | JSX.Element |
 export interface Column {
   id: ColumnIdType;
   label: string;
+  width?: string;
   align?: 'right';
   format?: ColumnFormat<Data>;
 }

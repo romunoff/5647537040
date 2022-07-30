@@ -5,6 +5,7 @@ export const getColumns = (formatDescriptionColumn: Function, createActions: Fun
   {
     id: 'id',
     label: 'Id',
+    width: '50',
   },
   {
     id: 'description',
@@ -15,6 +16,7 @@ export const getColumns = (formatDescriptionColumn: Function, createActions: Fun
     id: 'flex',
     label: 'Flex',
     align: 'right',
+    width: '100',
     format: (value: DataValueTypes, row: Data) => createActions(value, row),
   },
 ];

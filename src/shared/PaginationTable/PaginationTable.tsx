@@ -41,7 +41,12 @@ export const PaginationTable = ({ columns, rows }: PaginationTableProps) => {
           <TableHead>
             <TableRow>
               {columns.map((column: Column) => (
-                <TableCell key={column.id} classes={{ root: classes.tableHeadCell }} align={column.align}>
+                <TableCell
+                  key={column.id}
+                  classes={{ root: classes.tableHeadCell }}
+                  align={column.align}
+                  width={column?.width}
+                >
                   {column.label}
                 </TableCell>
               ))}

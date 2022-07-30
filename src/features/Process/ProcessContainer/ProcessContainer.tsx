@@ -2,7 +2,7 @@ import { Box, Button, createStyles, makeStyles, Theme } from '@material-ui/core'
 import { useNavigate } from 'react-router-dom';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { SituationDescriptionTable } from '../SituationDescriptionTable/SituationDescriptionTable';
-import { TransformationDescription } from '../TransformationDescription/TransformationDescription';
+import { TransformationDescriptionTable } from '../TransformationDescriptionTable/TransformationDescriptionTable';
 
 export const ProcessContainer = () => {
   const classes = useStyles();
@@ -17,7 +17,7 @@ export const ProcessContainer = () => {
       <Box>
         <Box className={classes.content}>
           <SituationDescriptionTable />
-          <TransformationDescription />
+          <TransformationDescriptionTable />
         </Box>
         <Box>
           <Button
@@ -38,10 +38,9 @@ export const ProcessContainer = () => {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      height: '100vh',
       display: 'flex',
-      alignItems: 'center',
       justifyContent: 'center',
+      marginTop: theme.spacing(25),
     },
     content: {
       width: '1440px',

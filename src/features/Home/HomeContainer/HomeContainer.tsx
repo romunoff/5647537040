@@ -1,5 +1,5 @@
 import { Box, Button, createStyles, makeStyles, Theme } from '@material-ui/core';
-import { TransformationDescription } from '../TransformationDescription/TransformationDescription';
+import { TransformationDescriptionTable } from '../TransformationDescriptionTable/TransformationDescriptionTable';
 import { SituationDescriptionTable } from '../SituationDescriptionTable/SituationDescriptionTable';
 import CachedIcon from '@material-ui/icons/Cached';
 import { useNavigate } from 'react-router-dom';
@@ -17,7 +17,7 @@ export const HomeContainer = () => {
       <Box>
         <Box className={classes.content}>
           <SituationDescriptionTable />
-          <TransformationDescription />
+          <TransformationDescriptionTable />
         </Box>
         <Box className={classes.processButton}>
           <Button
@@ -38,10 +38,9 @@ export const HomeContainer = () => {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      height: '100vh',
       display: 'flex',
-      alignItems: 'center',
       justifyContent: 'center',
+      marginTop: theme.spacing(25),
     },
     content: {
       width: '1440px',

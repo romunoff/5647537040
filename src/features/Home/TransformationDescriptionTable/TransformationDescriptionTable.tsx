@@ -1,48 +1,48 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { selectSituationDescriptionState } from '../../../utils/selectors/situationDescription-selectors';
 import { Box, createStyles, IconButton, makeStyles, Popover, Theme, Typography } from '@material-ui/core';
 import { PaginationTable } from '../../../shared/PaginationTable/PaginationTable';
 import { Column, Data, DataValueTypes } from '../../../shared/PaginationTable/paginationTableUtils';
-import { getColumns, getRows } from './situationDescriptionTableUtils';
+import { getColumns, getRows } from './transformationDescriptionTableUtils';
 import Papa from 'papaparse';
-import {
-  addSituationDescription,
-  changeSituationDescription,
-  clearSituationDescription,
-  loadSituationDescription,
-  removeSituationDescription,
-  SituationDescription,
-} from '../../../redux/SituationDescription/reducers/situationDescriptionReducer';
+import { useDispatch, useSelector } from 'react-redux';
 import AddIcon from '@material-ui/icons/Add';
 import PublishIcon from '@material-ui/icons/Publish';
 import GetAppIcon from '@material-ui/icons/GetApp';
+import { selectTransformationDescriptionState } from '../../../utils/selectors/transformationDescription-selectors';
+import {
+  addTransformationDescription,
+  clearTransformationDescription,
+  loadTransformationDescription,
+  removeTransformationDescription,
+  TransformationDescription,
+} from '../../../redux/TransformationDescription/reducers/transformationDescriptionReducer';
 import { useEffect, useState } from 'react';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
 import DoneIcon from '@material-ui/icons/Done';
 import CloseIcon from '@material-ui/icons/Close';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 import { downloadCsvFile } from '../../../utils/download-helper';
 import { TextInput } from '../../../shared/TextInput/TextInput';
 
-export const SituationDescriptionTable = () => {
+export const TransformationDescriptionTable = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const situationDescriptionState = useSelector(selectSituationDescriptionState);
+  const transformationDescriptionState = useSelector(selectTransformationDescriptionState);
 
-  const [tableData, setTableData] = useState<SituationDescription[]>([]);
+  const [tableData, setTableData] = useState<TransformationDescription[]>([]);
   const [editRowIds, setEditRowIds] = useState<(string | number)[]>([]);
   const [search, setSearch] = useState<string>('');
+  const [nameValue, setNameValue] = useState<string>('');
   const [descriptionValue, setDescriptionValue] = useState<string>('');
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   useEffect(() => {
-    setTableData(situationDescriptionState.list);
-  }, [situationDescriptionState.list.length]);
+    setTableData(transformationDescriptionState.list);
+  }, [transformationDescriptionState.list.length]);
 
   useEffect(() => {
     setTableData(
-      situationDescriptionState.list.filter((item: SituationDescription) =>
+      transformationDescriptionState.list.filter((item: TransformationDescription) =>
         item.description.toLowerCase().includes(search.toLowerCase()),
       ),
     );
@@ -50,7 +50,7 @@ export const SituationDescriptionTable = () => {
 
   useEffect(() => {
     return () => {
-      dispatch(clearSituationDescription());
+      dispatch(clearTransformationDescription());
     };
   }, []);
 
@@ -59,9 +59,16 @@ export const SituationDescriptionTable = () => {
   };
 
   const handleCloseAddForm = () => {
+    setNameValue('');
     setDescriptionValue('');
     setAnchorEl(null);
   };
+
+  const formatNameColumn = (value: DataValueTypes, row: Data) =>
+    editRowIds.includes(row.id) ? <TextInput name={row.id.toString()} defaultValue={value} /> : value;
+
+  const formatDescriptionColumn = (value: DataValueTypes, row: Data) =>
+    editRowIds.includes(row.id) ? <TextInput name={row.id.toString()} defaultValue={value} /> : value;
 
   const uploadFile = (event: any) => {
     Papa.parse(event.target.files[0], {
@@ -69,17 +76,14 @@ export const SituationDescriptionTable = () => {
       skipEmptyLines: true,
       transformHeader: (header: string) => header.trim().toLowerCase(),
       complete: (results) => {
-        dispatch(loadSituationDescription({ data: results.data }));
+        dispatch(loadTransformationDescription({ data: results.data }));
       },
     });
   };
 
   const downloadFile = () => {
-    downloadCsvFile(Papa.unparse(situationDescriptionState.list), 'situationDescription.csv');
+    downloadCsvFile(Papa.unparse(transformationDescriptionState.list), 'transformationDescription.csv');
   };
-
-  const formatDescriptionColumn = (value: DataValueTypes, row: Data) =>
-    editRowIds.includes(row.id) ? <TextInput name={row.id.toString()} defaultValue={value} /> : value;
 
   const createActions = (value: DataValueTypes, row: Data) =>
     editRowIds.includes(row.id) ? (
@@ -88,7 +92,7 @@ export const SituationDescriptionTable = () => {
           color='primary'
           size='small'
           onClick={() => {
-            dispatch(changeSituationDescription({ id: row.id, description: value }));
+            // dispatch(changeSituationDescription({ id: row.id, description: value }));
             setEditRowIds(editRowIds.filter((item: string | number) => item !== row.id));
           }}
         >
@@ -107,21 +111,21 @@ export const SituationDescriptionTable = () => {
         <IconButton color='primary' size='small' onClick={() => setEditRowIds([...editRowIds, row.id])}>
           <EditIcon />
         </IconButton>
-        <IconButton color='primary' size='small' onClick={() => dispatch(removeSituationDescription(row.id))}>
+        <IconButton color='primary' size='small' onClick={() => dispatch(removeTransformationDescription(row.id))}>
           <DeleteIcon />
         </IconButton>
       </>
     );
 
-  const id = anchorEl ? 'situationDescriptionPopover' : undefined;
+  const id = anchorEl ? 'transformationDescriptionPopover' : undefined;
 
-  const columns: Column[] = getColumns(formatDescriptionColumn, createActions);
+  const columns: Column[] = getColumns(formatNameColumn, formatDescriptionColumn, createActions);
   const rows: Data[] = getRows(tableData);
 
   return (
     <Box className={classes.root}>
       <Box className={classes.headerContainer}>
-        <Typography variant='h6'>SITUATION DESCRIPTION</Typography>
+        <Typography variant='h6'>IMAGE TRANSFORMATION DESCRIPTION</Typography>
       </Box>
       <Box className={classes.wrapper}>
         <Box>
@@ -147,12 +151,15 @@ export const SituationDescriptionTable = () => {
               }}
             >
               <Box className={classes.addForm}>
+                <TextInput placeholder='Enter name...' value={nameValue} onChange={setNameValue} />
                 <TextInput placeholder='Enter description...' value={descriptionValue} onChange={setDescriptionValue} />
                 <Box display='flex'>
                   <IconButton
                     color='primary'
                     size='small'
-                    onClick={() => dispatch(addSituationDescription(descriptionValue))}
+                    onClick={() =>
+                      dispatch(addTransformationDescription({ name: nameValue, description: descriptionValue }))
+                    }
                   >
                     <DoneIcon />
                   </IconButton>
@@ -193,7 +200,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: theme.spacing(5),
     },
     addForm: {
-      width: '300px',
+      width: '400px',
       display: 'flex',
       gap: theme.spacing(5),
       padding: theme.spacing(5),
