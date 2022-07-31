@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectSituationDescriptionState } from '../../../utils/selectors/situationDescription-selectors';
 import { Box, createStyles, IconButton, makeStyles, Theme, Typography } from '@material-ui/core';
 import { PaginationTable } from '../../../shared/PaginationTable/PaginationTable';
-import { Column, Data } from '../../../shared/PaginationTable/paginationTableUtils';
+import { Column, Data, DataValueTypes } from '../../../shared/PaginationTable/paginationTableUtils';
 import Papa from 'papaparse';
 import {
   clearSituationDescription,
@@ -13,6 +13,8 @@ import PublishIcon from '@material-ui/icons/Publish';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { useEffect } from 'react';
 import { getColumns, getRows } from './situationDescriptionTableUtils';
+import { highlightText } from '../../../utils/highlight-helper';
+import { lightPink } from '../../../styles/themes/colorVariables';
 
 export const SituationDescriptionTable = () => {
   const classes = useStyles();
@@ -37,7 +39,11 @@ export const SituationDescriptionTable = () => {
     });
   };
 
-  const columns: Column[] = getColumns();
+  const formatDescriptionColumn = (value: DataValueTypes) => (
+    <span onMouseUp={() => highlightText(lightPink)}>{value}</span>
+  );
+
+  const columns: Column[] = getColumns(formatDescriptionColumn);
   const rows: Data[] = getRows(situationDescriptionState.list);
 
   return (

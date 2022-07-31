@@ -1,14 +1,16 @@
-import { Column, Data } from '../../../shared/PaginationTable/paginationTableUtils';
+import { Column, Data, DataValueTypes } from '../../../shared/PaginationTable/paginationTableUtils';
 import { SituationDescription } from '../../../redux/SituationDescription/reducers/situationDescriptionReducer';
 
-export const getColumns = (): Column[] => [
+export const getColumns = (formatDescriptionColumn: Function): Column[] => [
   {
     id: 'id',
     label: 'Id',
+    width: '50',
   },
   {
     id: 'description',
     label: 'Description',
+    format: (value: DataValueTypes, row: Data) => formatDescriptionColumn(value, row),
   },
 ];
 
