@@ -1,11 +1,14 @@
-import { scienceBlue, white } from './colorVariables';
+import { lava, metallicSeaweed, white } from './colorVariables';
 
 export const mainTheme = {
   spacing: 2,
   palette: {
     primary: {
-      main: scienceBlue,
+      main: metallicSeaweed,
       contrastText: white,
+    },
+    error: {
+      main: lava,
     },
   },
 };

@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core';
 import { useState } from 'react';
 import { Column, Data, DEFAULT_ROWS_PER_PAGE } from './paginationTableUtils';
-import { lightGrey } from '../../styles/themes/colorVariables';
+import { nobel } from '../../styles/themes/colorVariables';
 
 interface PaginationTableProps {
   columns: Column[];
@@ -91,7 +91,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: '100%',
-      border: `1px solid ${lightGrey}`,
+      border: `1px solid ${nobel}`,
       boxShadow: 'none',
       borderRadius: theme.spacing(5),
     },
@@ -100,13 +100,13 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingTop: theme.spacing(2.5),
       paddingBottom: theme.spacing(2.5),
       background: 'none',
-      borderRight: `1px solid ${lightGrey}`,
+      borderRight: `1px solid ${nobel}`,
       '&:last-child': {
         borderRight: 0,
       },
     },
     tableBodyCell: {
-      borderBottom: `1px solid ${lightGrey}`,
+      borderBottom: `1px solid ${nobel}`,
       '&:first-child': {
         color: theme.palette.primary.main,
       },

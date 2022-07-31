@@ -8,7 +8,6 @@ import Papa from 'papaparse';
 import {
   addSituationDescription,
   changeSituationDescription,
-  clearSituationDescription,
   loadSituationDescription,
   removeSituationDescription,
   SituationDescription,
@@ -47,12 +46,6 @@ export const SituationDescriptionTable = () => {
       ),
     );
   }, [search, situationDescriptionState.list]);
-
-  useEffect(() => {
-    return () => {
-      dispatch(clearSituationDescription());
-    };
-  }, []);
 
   const handleOpenAddForm = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -115,19 +108,19 @@ export const SituationDescriptionTable = () => {
     editRowData.some((item: SituationDescription) => item.id === row.id) ? (
       <>
         <IconButton color='primary' size='small' onClick={() => handleSaveButton(row.id)}>
-          <DoneIcon />
+          <DoneIcon fontSize='small' />
         </IconButton>
         <IconButton color='primary' size='small' onClick={() => handleCancelButton(row.id)}>
-          <CloseIcon />
+          <CloseIcon fontSize='small' />
         </IconButton>
       </>
     ) : (
       <>
         <IconButton color='primary' size='small' onClick={() => handleEditButton(row.id)}>
-          <EditIcon />
+          <EditIcon fontSize='small' color='primary' />
         </IconButton>
         <IconButton color='primary' size='small' onClick={() => dispatch(removeSituationDescription(row.id))}>
-          <DeleteIcon />
+          <DeleteIcon fontSize='small' color='error' />
         </IconButton>
       </>
     );

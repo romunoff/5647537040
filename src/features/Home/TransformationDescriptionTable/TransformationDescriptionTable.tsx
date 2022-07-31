@@ -11,7 +11,6 @@ import { selectTransformationDescriptionState } from '../../../utils/selectors/t
 import {
   addTransformationDescription,
   changeTransformationDescription,
-  clearTransformationDescription,
   loadTransformationDescription,
   removeTransformationDescription,
   TransformationDescription,
@@ -48,12 +47,6 @@ export const TransformationDescriptionTable = () => {
       ),
     );
   }, [search, transformationDescriptionState.list]);
-
-  useEffect(() => {
-    return () => {
-      dispatch(clearTransformationDescription());
-    };
-  }, []);
 
   const handleOpenAddForm = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -134,19 +127,19 @@ export const TransformationDescriptionTable = () => {
     editRowData.some((item: TransformationDescription) => item.id === row.id) ? (
       <>
         <IconButton color='primary' size='small' onClick={() => handleSaveButton(row.id)}>
-          <DoneIcon />
+          <DoneIcon fontSize='small' />
         </IconButton>
         <IconButton color='primary' size='small' onClick={() => handleCancelButton(row.id)}>
-          <CloseIcon />
+          <CloseIcon fontSize='small' />
         </IconButton>
       </>
     ) : (
       <>
         <IconButton color='primary' size='small' onClick={() => handleEditButton(row.id)}>
-          <EditIcon />
+          <EditIcon fontSize='small' />
         </IconButton>
         <IconButton color='primary' size='small' onClick={() => dispatch(removeTransformationDescription(row.id))}>
-          <DeleteIcon />
+          <DeleteIcon fontSize='small' color='error' />
         </IconButton>
       </>
     );

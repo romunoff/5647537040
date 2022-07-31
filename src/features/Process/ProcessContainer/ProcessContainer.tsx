@@ -3,10 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { SituationDescriptionTable } from '../SituationDescriptionTable/SituationDescriptionTable';
 import { TransformationDescriptionTable } from '../TransformationDescriptionTable/TransformationDescriptionTable';
+import { useState } from 'react';
 
 export const ProcessContainer = () => {
   const classes = useStyles();
   const navigate = useNavigate();
+
+  const [situationDescriptionId, setSituationDescriptionId] = useState<string | number>('');
 
   const handleBackButton = () => {
     navigate('/');
@@ -16,8 +19,8 @@ export const ProcessContainer = () => {
     <Box className={classes.root}>
       <Box>
         <Box className={classes.content}>
-          <SituationDescriptionTable />
-          <TransformationDescriptionTable />
+          <SituationDescriptionTable setSituationDescriptionId={setSituationDescriptionId} />
+          {situationDescriptionId && <TransformationDescriptionTable situationDescriptionId={situationDescriptionId} />}
         </Box>
         <Box>
           <Button
