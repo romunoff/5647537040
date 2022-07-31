@@ -23,7 +23,7 @@ const situationDescriptionSlice = createSlice({
     },
     changeSituationDescription: (state, action) => {
       state.situationDescriptionState.list = state.situationDescriptionState.list.map((item) =>
-        item.id === action.payload.id ? { ...item, description: action.payload.description } : item,
+        item.id === action.payload.id ? { ...item, ...action.payload } : item,
       );
     },
     addSituationDescription: (state, action) => {

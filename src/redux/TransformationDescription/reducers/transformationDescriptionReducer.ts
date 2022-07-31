@@ -22,14 +22,18 @@ const transformationDescriptionSlice = createSlice({
     loadTransformationDescription: (state, action) => {
       state.transformationDescriptionState.list = action.payload.data;
     },
+    changeTransformationDescription: (state, action) => {
+      state.transformationDescriptionState.list = state.transformationDescriptionState.list.map((item) =>
+        item.id === action.payload.id ? { ...item, ...action.payload } : item,
+      );
+    },
     addTransformationDescription: (state, action) => {
       const list = state.transformationDescriptionState.list;
       state.transformationDescriptionState.list = [
         ...list,
         {
           id: (+list[list.length - 1]?.id || 0) + 1,
-          name: action.payload.name,
-          description: action.payload.description,
+          ...action.payload,
         },
       ];
     },
@@ -46,6 +50,7 @@ const transformationDescriptionSlice = createSlice({
 
 export const {
   loadTransformationDescription,
+  changeTransformationDescription,
   addTransformationDescription,
   removeTransformationDescription,
   clearTransformationDescription,

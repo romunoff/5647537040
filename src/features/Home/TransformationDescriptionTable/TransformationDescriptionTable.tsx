@@ -10,6 +10,7 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 import { selectTransformationDescriptionState } from '../../../utils/selectors/transformationDescription-selectors';
 import {
   addTransformationDescription,
+  changeTransformationDescription,
   clearTransformationDescription,
   loadTransformationDescription,
   removeTransformationDescription,
@@ -30,7 +31,7 @@ export const TransformationDescriptionTable = () => {
   const transformationDescriptionState = useSelector(selectTransformationDescriptionState);
 
   const [tableData, setTableData] = useState<TransformationDescription[]>([]);
-  const [editRowIds, setEditRowIds] = useState<(string | number)[]>([]);
+  const [editRowData, setEditRowData] = useState<TransformationDescription[]>([]);
   const [search, setSearch] = useState<string>('');
   const [nameValue, setNameValue] = useState<string>('');
   const [descriptionValue, setDescriptionValue] = useState<string>('');
@@ -46,7 +47,7 @@ export const TransformationDescriptionTable = () => {
         item.description.toLowerCase().includes(search.toLowerCase()),
       ),
     );
-  }, [search]);
+  }, [search, transformationDescriptionState.list]);
 
   useEffect(() => {
     return () => {
@@ -64,12 +65,6 @@ export const TransformationDescriptionTable = () => {
     setAnchorEl(null);
   };
 
-  const formatNameColumn = (value: DataValueTypes, row: Data) =>
-    editRowIds.includes(row.id) ? <TextInput name={row.id.toString()} defaultValue={value} /> : value;
-
-  const formatDescriptionColumn = (value: DataValueTypes, row: Data) =>
-    editRowIds.includes(row.id) ? <TextInput name={row.id.toString()} defaultValue={value} /> : value;
-
   const uploadFile = (event: any) => {
     Papa.parse(event.target.files[0], {
       header: true,
@@ -85,30 +80,69 @@ export const TransformationDescriptionTable = () => {
     downloadCsvFile(Papa.unparse(transformationDescriptionState.list), 'transformationDescription.csv');
   };
 
+  const handleEditButton = (id: string | number) => {
+    const findItem = transformationDescriptionState.list.find((item: TransformationDescription) => item.id === id);
+    findItem && setEditRowData([...editRowData, findItem]);
+  };
+
+  const handleCancelButton = (id: string | number) => {
+    setEditRowData(editRowData.filter((item: TransformationDescription) => item.id !== id));
+  };
+
+  const handleSaveButton = (id: string | number) => {
+    const findItem = editRowData.find((item: TransformationDescription) => item.id === id);
+    findItem && setTableData(tableData.map((item: TransformationDescription) => (item.id === id ? findItem : item)));
+    dispatch(changeTransformationDescription(findItem));
+    handleCancelButton(id);
+  };
+
+  const formatNameColumn = (value: DataValueTypes, row: Data) =>
+    editRowData.some((item: TransformationDescription) => item.id === row.id) ? (
+      <TextInput
+        name={row.id.toString()}
+        defaultValue={value}
+        onBlur={(event: any) =>
+          setEditRowData(
+            editRowData.map((item: TransformationDescription) =>
+              item.id === row.id ? { ...item, name: event.target.value } : item,
+            ),
+          )
+        }
+      />
+    ) : (
+      value
+    );
+
+  const formatDescriptionColumn = (value: DataValueTypes, row: Data) =>
+    editRowData.some((item: TransformationDescription) => item.id === row.id) ? (
+      <TextInput
+        name={row.id.toString()}
+        defaultValue={value}
+        onBlur={(event: any) =>
+          setEditRowData(
+            editRowData.map((item: TransformationDescription) =>
+              item.id === row.id ? { ...item, description: event.target.value } : item,
+            ),
+          )
+        }
+      />
+    ) : (
+      value
+    );
+
   const createActions = (value: DataValueTypes, row: Data) =>
-    editRowIds.includes(row.id) ? (
+    editRowData.some((item: TransformationDescription) => item.id === row.id) ? (
       <>
-        <IconButton
-          color='primary'
-          size='small'
-          onClick={() => {
-            // dispatch(changeSituationDescription({ id: row.id, description: value }));
-            setEditRowIds(editRowIds.filter((item: string | number) => item !== row.id));
-          }}
-        >
+        <IconButton color='primary' size='small' onClick={() => handleSaveButton(row.id)}>
           <DoneIcon />
         </IconButton>
-        <IconButton
-          color='primary'
-          size='small'
-          onClick={() => setEditRowIds(editRowIds.filter((item: string | number) => item !== row.id))}
-        >
+        <IconButton color='primary' size='small' onClick={() => handleCancelButton(row.id)}>
           <CloseIcon />
         </IconButton>
       </>
     ) : (
       <>
-        <IconButton color='primary' size='small' onClick={() => setEditRowIds([...editRowIds, row.id])}>
+        <IconButton color='primary' size='small' onClick={() => handleEditButton(row.id)}>
           <EditIcon />
         </IconButton>
         <IconButton color='primary' size='small' onClick={() => dispatch(removeTransformationDescription(row.id))}>
